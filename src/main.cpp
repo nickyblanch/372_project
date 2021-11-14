@@ -1,9 +1,32 @@
+// ECE 372 Final Project
+// Professor Dale Hetherington
+// Fall 2021
+// Authors: Nick Blanchard,
+
+// ---------------------------------------------------------------------- //
+// Libraries and source files
 #include <Arduino.h>
 
-void setup() {
-  // put your setup code here, to run once:
+// ---------------------------------------------------------------------- //
+// Global Variables
+
+
+
+// ---------------------------------------------------------------------- //
+// State Machines
+
+
+
+// ---------------------------------------------------------------------- //
+// Main Function
+void main() {
+
+  // Hardware initializations
+  Serial.begin(9600); // For debugging purposes
+  init_rfid();        // MFRC522 RFID Module
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-}
+
+
+// ---------------------------------------------------------------------- //
+// Interrupt Service Routines
