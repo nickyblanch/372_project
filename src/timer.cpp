@@ -1,73 +1,68 @@
+// Author: 
+// Net ID: 
+// Date: 
+// Assignment: Lab 3
+//----------------------------------------------------------------------//
 
 #include "timer.h"
-
-void initTimer0(){
-//set waverform generations bits to CTC mode
-//WGM13=0; WGM12=1; WGM11=0; WGM10=0;
-TCCR0A&=~(1<<WGM00);
-TCCR0A|=(1<<WGM01);
-TCCR0B&=~(1<<WGM02);
-
-TCCR0B |= (1 << CS01) | (1 << CS00); // Sets the prescalerto 64
-
-OCR0A = 250;
-
-}
+//You many use any timer you wish for the microsecond delay and the millisecond delay
 
 
-
+/* Initialize timer 1, you should not turn the timer on here. Use CTC mode  .*/
 void initTimer1(){
+TCCR1A &= ~(1<< WGM10);
+TCCR1B |= (1<< WGM12);//This bit being 1 sets up CTC mode
+TCCR1A &= ~(1<< WGM11);
+TCCR1B &= ~(1<< WGM13);
 
-// make timer for 1 second 
+TCCR1B |= ((1<< CS11) | (1<< CS10));
+TCCR1B &= ~(1 << CS12);//Sets prescaler to 8
 
-//set waverform generations bits to CTC mode
-//WGM13=0; WGM12=1; WGM11=0; WGM10=0;
-TCCR1A&=~(1<<WGM10);
-TCCR1A&=~(1<<WGM11);
-TCCR1A|=(1<<WGM12);
-TCCR1B&=~(1<<WGM13);
-
-//OCR1A=1*40000000/1024=39062.5
-//set prescaler to 1024
-//CS12=1, CS11=0 CS10=1
-TCCR1B|=(1<<CS10)|(1<<CS12);
-TCCR1B&=~(1<<CS11);
-
-OCR1A=39062;
-
-}
+OCR1AH = 0;OCR1AL = 2;
+OCR1A=15;
+}	
 
 
-
-void delay_Ms(unsigned int delay){
-
-    unsigned int delayCnt= 0;TCNT0 = 0;
-    //starting the timer at 0 instead of some random junk number
-    TIFR0 |= (1 << OCF0A);// set compare flag to start timer
-    while (delayCnt< delay) {
-        if (TIFR0 & (1 << OCF0A)) {
-            //increment only while the flag is set (timer reached maxval= OCR0A)
-            delayCnt++;
-            TIFR0 |= (1 << OCF0A);
-            TCNT0 = 0;
-            //re-start timer. will go to 0 before reaching the if statement above
+/* This delays the program an amount of microseconds specified by unsigned int delay.
+*/
+void delayUs(unsigned int delay){
+    unsigned int delayCnt = 0;
+    TIFR1 |= (1<< OCF1A);//Set compare flag to start timer
+    TCNT1 = 0;//Initializes timer to 0
+    while(delayCnt < delay){
+        if(TIFR1 & (1<<OCF1A)){
+            delayCnt++;//Incrament only if flag is set and OCF1A not reached
+            TIFR1 |= (1<<OCF1A);//Set timer back to all 0's 
         }
     }
 }
 
+/* Initialize timer 0, you should not turn the timer on here.
+* You will need to use CTC mode */
+void initTimer0(){
+TCCR0A &= ~(1<< WGM00);
+TCCR0A |= (1<< WGM01);//This bit being 1 sets up CTC mode
+TCCR0B &= ~(1<< WGM02);
 
+TCCR0B |= (1<< CS02) | (1<< CS00);
+TCCR0B &= ~(1 << CS01);//Sets prescaler to 1024
 
-void delay_s(unsigned int delay){
-unsigned int delayCnt= 0;TCNT1 = 0;
-    //starting the timer at 0 instead of some random junk number
-    TIFR1 |= (1 << OCF1A);// set compare flag to start timer
-    while (delayCnt< delay) {
-        if (TIFR1 & (1 << OCF1A)) {
-            //increment only while the flag is set (timer reached maxval= OCR1A)
-            delayCnt++;
-            TIFR1 |= (1 << OCF1A);
-            TCNT1=0;
-            //re-start timer. will go to 0 before reaching the if statement above
+OCR0A = 15;//solved for a 1ms delay OCR0A=Desired ms delay * 16Mhz / Prescaler
+}
+
+/* This delays the program an amount specified by unsigned int delay.
+* Use timer 0. Keep in mind that you need to choose your prescalar wisely
+* such that your timer is precise to 1 millisecond and can be used for
+* 100-2000 milliseconds
+*/
+void delayMs(unsigned int delay){
+    unsigned int delayCnt = 0;
+    TCNT0 = 0;//Initializes timer to 0
+    TIFR0 |= (1<< OCF0A);//Set compare flag to start timer
+    while(delayCnt < delay){
+        if(TIFR0 & (1<<OCF0A)){
+            delayCnt++;//Incrament only if flag is set and OCF0A not reached
+            TIFR0 |= (1<< OCF0A);//Set timer back to all 0's 
         }
     }
 }
