@@ -6,6 +6,7 @@
 // ---------------------------------------------------------------------- //
 // Libraries and source files
 #include <Arduino.h>
+#include "rfid.h"
 
 // ---------------------------------------------------------------------- //
 // Global Variables
@@ -19,11 +20,13 @@
 
 // ---------------------------------------------------------------------- //
 // Main Function
-void main() {
+int main(void) {
 
   // Hardware initializations
   Serial.begin(9600); // For debugging purposes
   init_rfid();        // MFRC522 RFID Module
+
+  return 0;
 }
 
 

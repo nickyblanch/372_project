@@ -1,6 +1,7 @@
 #include <MFRC522.h>
 #include <SPI.h>
 #include <Arduino.h>
+#include "rfid.h"
 
 // ---------------------------------------------------- //
 MFRC522 mfrc522(53, 5);  // Create MFRC522 instance
@@ -10,8 +11,8 @@ void init_rfid() {
     // Initialized the hardware on the MEGA2560 and the MFRC522
     // for SPI communication.
 
-    SPI.begin(); // Initialize SPI bus
-    mfrc522.PCD_Init();
+    SPI.begin(); 		// Initialize SPI bus
+    mfrc522.PCD_Init(); // Initialize RFID reader
 
 }
 
