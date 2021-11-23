@@ -2,7 +2,6 @@
 // Course: ECE 372
 // Final Project Fall 2021
 
-#include "spi_new.h"
 #include <avr/interrupt.h>
 #include <avr/io.h>
 

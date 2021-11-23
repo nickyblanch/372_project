@@ -1,7 +1,6 @@
 #include <MFRC522.h>
 #include <SPI.h>
 #include <Arduino.h>
-#include "rfid.h"
 
 // ---------------------------------------------------- //
 MFRC522 mfrc522(53, 5);  // Create MFRC522 instance
