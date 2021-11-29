@@ -10,8 +10,8 @@ void init_rfid() {
     // Initialized the hardware on the MEGA2560 and the MFRC522
     // for SPI communication.
 
-    SPI.begin(); // Initialize SPI bus
-    mfrc522.PCD_Init();
+    SPI.begin(); 		// Initialize SPI bus
+    mfrc522.PCD_Init(); // Initialize RFID reader
 
 }
 

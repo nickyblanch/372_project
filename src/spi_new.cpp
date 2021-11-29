@@ -2,7 +2,6 @@
 // Course: ECE 372
 // Final Project Fall 2021
 
-#include "spi.h"
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
@@ -14,7 +13,6 @@
 #define SPI_SS_BIT PORTB0   // Port B register Bit B0 of Chip Select on ATMEGA2560 is PORTB0
 
 #define wait_for_complete while(!(SPSR & (1 << SPIF)));
-
 
 void SPI_MASTER_Init() {
     // set MOSI,SCK,and SS direction to outputs
@@ -31,11 +29,11 @@ void SPI_MASTER_Init() {
 
     }
 
-    void write_execute(unsigned char CMD, unsigned char data) {
-        SPI_PORT &= ~(1 << SPI_SS_BIT);     // enable chip select bit to begin SPI frame
-        SPDR = CMD;                         // load the CMD address into register
-        wait_for_complete;                  // wait for flag to raise
-        SPDR = data;                        // load the data into register
-        wait_for_complete;                  // wait for flag to raise
-        SPI_PORT |= (1 << SPI_SS_BIT);      // disable chip select to end SPI frame
-    }
+void write_execute(unsigned char CMD, unsigned char data) {
+    SPI_PORT &= ~(1 << SPI_SS_BIT);     // enable chip select bit to begin SPI frame
+    SPDR = CMD;                         // load the CMD address into register
+    wait_for_complete;                  // wait for flag to raise
+    SPDR = data;                        // load the data into register
+    wait_for_complete;                  // wait for flag to raise
+    SPI_PORT |= (1 << SPI_SS_BIT);      // disable chip select to end SPI frame
+}
