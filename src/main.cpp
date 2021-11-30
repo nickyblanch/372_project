@@ -6,13 +6,17 @@
 // ---------------------------------------------------------------------- //
 // Libraries and source files
 #include <Arduino.h>
+#include <MFRC522.h>
+#include <SPI.h>
 #include "rfid.h"
 #include "switch.h"
 
 // ---------------------------------------------------------------------- //
 // Global Variables
-unsigned char
+#define RST_PIN         9          // Configurable, see typical pin layout above
+#define SS_PIN          53         // Configurable, see typical pin layout above
 
+MFRC522 mfrc522(SS_PIN, RST_PIN);  // Create MFRC522 instance
 
 
 // ---------------------------------------------------------------------- //
@@ -27,18 +31,28 @@ volatile stateEnum operation_state = normal;  // ASSUMING WE BEGIN IN A STATE OF
 // Main Function
 int main(void) {
   // Variables
-  unsigned char sonar_data;
+  //unsigned char sonar_data;
 
   // Hardware initializations
   Serial.begin(9600); // For debugging purposes
+  Serial.println("Entering init_rfid()");
   init_rfid();        // MFRC522 RFID Module
 
+/*
   // Read sonar
   while(!sonar_data) {
     // Send pulse
     // Begin timer
     // 
   }
+  */
+
+ while(1) {
+
+  // Read RFID
+  read_rfid();
+
+ }
 
   return 0;
 }
