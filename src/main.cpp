@@ -8,8 +8,8 @@
 #include <Arduino.h>
 #include <MFRC522.h>
 #include <SPI.h>
-#include "rfid.h"
-#include "switch.h"
+//#include "rfid.h"
+//#include "switch.h"
 
 // ---------------------------------------------------------------------- //
 // Global Variables
@@ -34,9 +34,15 @@ int main(void) {
   //unsigned char sonar_data;
 
   // Hardware initializations
-  Serial.begin(9600); // For debugging purposes
-  Serial.println("Entering init_rfid()");
-  init_rfid();        // MFRC522 RFID Module
+  Serial.begin(9600);		// Initialize serial communications with the PC
+	while (!Serial);		// Do nothing if no serial port is opened (added for Arduinos based on ATMEGA32U4)
+	SPI.begin();			// Init SPI bus
+  Serial.println("Entering PCD_Init()");
+	mfrc522.PCD_Init();		// Init MFRC522
+	Serial.println("Exiting PCD_Init()");
+  _delay_ms(4);				// Optional delay. Some board do need more time after init to be ready, see Readme
+	mfrc522.PCD_DumpVersionToSerial();	// Show details of PCD - MFRC522 Card Reader details
+	Serial.println(F("Scan PICC to see UID, SAK, type, and data blocks..."));
 
 /*
   // Read sonar
@@ -49,10 +55,18 @@ int main(void) {
 
  while(1) {
 
-  // Read RFID
-  read_rfid();
+  // Reset the loop if no new card present on the sensor/reader. This saves the entire process when idle.
+	if ( ! mfrc522.PICC_IsNewCardPresent()) {
+    // Do nothing
+	}
+	else if ( ! mfrc522.PICC_ReadCardSerial()) {
+    // Do nothing
+	}
+	else {
+    mfrc522.PICC_DumpToSerial(&(mfrc522.uid));
+  }
 
- }
+ } // End while loop
 
   return 0;
 }
