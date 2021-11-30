@@ -37,10 +37,9 @@ int main(void) {
   Serial.begin(9600);		// Initialize serial communications with the PC
 	while (!Serial);		// Do nothing if no serial port is opened (added for Arduinos based on ATMEGA32U4)
 	SPI.begin();			// Init SPI bus
-  Serial.println("Entering PCD_Init()");
+  Serial.println("Entering bastard function");
 	mfrc522.PCD_Init();		// Init MFRC522
-	Serial.println("Exiting PCD_Init()");
-  _delay_ms(4);				// Optional delay. Some board do need more time after init to be ready, see Readme
+	//delay(4);				// Optional delay. Some board do need more time after init to be ready, see Readme
 	mfrc522.PCD_DumpVersionToSerial();	// Show details of PCD - MFRC522 Card Reader details
 	Serial.println(F("Scan PICC to see UID, SAK, type, and data blocks..."));
 
@@ -52,19 +51,26 @@ int main(void) {
     // 
   }
   */
-
+ bool run = true;
  while(1) {
+   Serial.println("Looping!");
 
-  // Reset the loop if no new card present on the sensor/reader. This saves the entire process when idle.
-	if ( ! mfrc522.PICC_IsNewCardPresent()) {
-    // Do nothing
-	}
-	else if ( ! mfrc522.PICC_ReadCardSerial()) {
-    // Do nothing
-	}
-	else {
-    mfrc522.PICC_DumpToSerial(&(mfrc522.uid));
-  }
+   run = true;
+
+    // Reset the loop if no new card present on the sensor/reader. This saves the entire process when idle.
+    if ( ! mfrc522.PICC_IsNewCardPresent()) {
+      run = false;
+    }
+
+    // Select one of the cards
+    else if ( ! mfrc522.PICC_ReadCardSerial()) {
+      run = false;
+    }
+
+    // Dump debug info about the card; PICC_HaltA() is automatically called
+    if (run) {
+      mfrc522.PICC_DumpToSerial(&(mfrc522.uid));
+    }
 
  } // End while loop
 
