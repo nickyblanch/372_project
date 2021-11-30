@@ -8,8 +8,8 @@
 #include <Arduino.h>
 #include <MFRC522.h>
 #include <SPI.h>
-//#include "rfid.h"
-//#include "switch.h"
+#include "rfid.h"
+#include "switch.h"
 
 // ---------------------------------------------------------------------- //
 // Global Variables
@@ -31,49 +31,24 @@ volatile stateEnum operation_state = normal;  // ASSUMING WE BEGIN IN A STATE OF
 // Main Function
 int main(void) {
   // Variables
-  //unsigned char sonar_data;
+  unsigned char sonar_data;
 
   // Hardware initializations
-  Serial.begin(9600);		// Initialize serial communications with the PC
-	while (!Serial);		// Do nothing if no serial port is opened (added for Arduinos based on ATMEGA32U4)
-	SPI.begin();			// Init SPI bus
-  Serial.println("Entering bastard function");
-	mfrc522.PCD_Init();		// Init MFRC522
-	//delay(4);				// Optional delay. Some board do need more time after init to be ready, see Readme
-	mfrc522.PCD_DumpVersionToSerial();	// Show details of PCD - MFRC522 Card Reader details
-	Serial.println(F("Scan PICC to see UID, SAK, type, and data blocks..."));
+  init();  // NOTE: This function is included in the 'main' function within the Arduino core library.
+           // Due to our redefinition of 'main', we must include this function call within our new 'main'.
+  #if defined(USBCON)
+      USBDevice.attach();
+  #endif
+      
+  Serial.begin(9600);		// Initialize serial port
+  init_rfid();          // Initialize RFID module
 
-/*
-  // Read sonar
-  while(!sonar_data) {
-    // Send pulse
-    // Begin timer
-    // 
+  // MAIN LOOP
+  while(1) {
+    read_rfid();
+    delay(1000);
   }
-  */
- bool run = true;
- while(1) {
-   Serial.println("Looping!");
-
-   run = true;
-
-    // Reset the loop if no new card present on the sensor/reader. This saves the entire process when idle.
-    if ( ! mfrc522.PICC_IsNewCardPresent()) {
-      run = false;
-    }
-
-    // Select one of the cards
-    else if ( ! mfrc522.PICC_ReadCardSerial()) {
-      run = false;
-    }
-
-    // Dump debug info about the card; PICC_HaltA() is automatically called
-    if (run) {
-      mfrc522.PICC_DumpToSerial(&(mfrc522.uid));
-    }
-
- } // End while loop
-
+ 
   return 0;
 }
 
