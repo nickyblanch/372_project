@@ -46,7 +46,7 @@ int main() {
 
 // ---------------------------------------------------------------------- //
 // Interrupt Service Routines
-ISR(PCINT0_vect){//Main code is interrupted if the switch connected to pin50 changes
+ISR(PCINT0_vect){//Main code is interrupted if the switch connected to pin10 changes
   if(echoSignal == wait_high){
     echoSignal = wait_low;
   }
