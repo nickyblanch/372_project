@@ -7,9 +7,10 @@
 // Libraries and source files
 #include <Arduino.h>
 #include <MFRC522.h>
-#include <SPI.h>
+//#include <SPI.h>
 #include "rfid.h"
 #include "switch.h"
+#include "spi_new.h"
 
 // ---------------------------------------------------------------------- //
 // Global Variables
@@ -31,7 +32,7 @@ volatile stateEnum operation_state = normal;  // ASSUMING WE BEGIN IN A STATE OF
 // Main Function
 int main(void) {
   // Variables
-  unsigned char sonar_data;
+  //unsigned char sonar_data;
 
   // Hardware initializations
   init();  // NOTE: This function is included in the 'main' function within the Arduino core library.
@@ -41,6 +42,7 @@ int main(void) {
   #endif
       
   Serial.begin(9600);		// Initialize serial port
+  SPI_MASTER_Init();    // Initialize SPI bus
   init_rfid();          // Initialize RFID module
 
   // MAIN LOOP
