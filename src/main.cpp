@@ -14,6 +14,7 @@
 #include "timer.h"
 #include "switch.h"
 #include "screamingRoboBat.h"
+#include "pwm.h"
 
 // ---------------------------------------------------------------------- //
 // Global Variables
@@ -40,6 +41,7 @@ volatile stateEnum operation_state = normal;  // ASSUMING WE BEGIN IN A STATE OF
 int main(void) {
   // Variables
   //unsigned char sonar_data;
+  int num = 0;
 
   // Hardware initializations
   init();  // NOTE: This function is included in the 'main' function within the Arduino core library.
@@ -53,17 +55,23 @@ int main(void) {
   init_rfid();          // Initialize RFID module
   sei(); 
   initSwitchPB3();
+  initPWMTimer3();
   initTimer4();
   initTimer1();
   initSonar();
+  change_frequency(50);
 
   // MAIN LOOP
   while(1) {
-    read_rfid();
-    delay(1000);
+    num = read_rfid();
+    //delay(1000);
 
-    if(inSonarRange){
+    if(inSonarRange | (num == 568)) {
       Serial.println("<<<<<<OPENING DOOR>>>>>>");
+      // OPEN THE DOOR
+      TURNCLOCKWISE();
+      delay(5000);
+      TURNCOUNTERCLOCKWISE();
     }
     sendPulse();
     switch(echoSignal){

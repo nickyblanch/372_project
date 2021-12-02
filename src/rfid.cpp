@@ -10,11 +10,11 @@ void init_rfid() {
 
 }
 
-void read_rfid() {
+int read_rfid() {
 
     // Reset the loop if no new card present on the sensor/reader. This saves the entire process when idle.
     if ( ! mfrc522.PICC_IsNewCardPresent()) {
-      return;
+      return 0;
     }
 
     // Select one of the cards
@@ -23,7 +23,14 @@ void read_rfid() {
     }
 
     // Dump debug info about the card; PICC_HaltA() is automatically called
-    mfrc522.PICC_DumpDetailsToSerial(&(mfrc522.uid));
+    // UID
+    int num = 0;
+    Serial.print(F("Card UID:"));
+    for (byte i = 0; i < mfrc522.uid.size; i++) {
+      num = num + mfrc522.uid.uidByte[i];
+    } 
+    Serial.println(num);
+    return(num);
 
 }
 

@@ -12,7 +12,7 @@ void initPWMTimer3() {
     // We are using PORTH5 (pin 8 on board) (this is the OCR1C output pin)
     //
     // NOTE: When using Mode 15, OCR3A is needed to set the top value. Therefore, we must
-    // use OCR1C for out output compare, and out output pin must be PH5 (pin 8).
+    // use OCR1C for out output compare, and out output pin must be PE5 (pin 3).
     DDRE |= (1 << DDE5);
 
     // We will use PWM mode 15 (so we can vary frequency)
@@ -25,7 +25,7 @@ void initPWMTimer3() {
     // We will use a prescaler of 256. The 'top value' is OCR3A.
     // fpwm = fclk / (prescaler * (1 + top value)), we will use a prescaler of 256
 
-    // Set prescaler to 253
+    // Set prescaler to 256
     TCCR3B &= ~(1 << CS30);
     TCCR3B &= ~(1 << CS31);
     TCCR3B |= (1 << CS32);
@@ -53,22 +53,15 @@ void ChangeDutyCycle(double Direction){
      OCR3C = OCR3A * Direction;   
 }
 void TURNCLOCKWISE(){
-    
     _delay_ms(5);
-
     ChangeDutyCycle(CLOCKWISE);
-       Serial.println("turning");
+    Serial.println("turning");
 }
 void TURNCOUNTERCLOCKWISE(){
-    
     _delay_ms(5);
-
     ChangeDutyCycle(COUNTERCLOCKWISE);
 }
 void TURNTOMIDDLE(){
-    
     _delay_ms(5);
-
     ChangeDutyCycle(MIDDLE);
-
 }
