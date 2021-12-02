@@ -21,8 +21,8 @@ void initSwitchPD0(){
 }
 
 void initSwitchPB3(){
-    DDRB &= (~(1<<DDB3));//Configures PORTB data direction as input
-    PORTB |= (1<<PORTB3);//Enables Pull-Up Resistors for PORTB3 pin50
+    DDRB &= (~(1<<DDB4));//Configures PORTB data direction as input
+    PORTB |= (1<<PORTB4);//Enables Pull-Up Resistors for PORTB4 pin10
     PCICR |= (1<<PCIE0);//Enables PCINT 0-7
-    PCMSK0 |= (1<<PCINT3);//Enables PCINT3 pin50 
+    PCMSK0 |= (1<<PCINT4);//Enables PCINT4 pin10
 }
