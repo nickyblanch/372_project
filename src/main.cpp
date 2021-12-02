@@ -11,6 +11,9 @@
 #include "rfid.h"
 #include "switch.h"
 #include "spi_new.h"
+#include "timer.h"
+#include "switch.h"
+#include "screamingRoboBat.h"
 
 // ---------------------------------------------------------------------- //
 // Global Variables
@@ -18,11 +21,15 @@
 #define SS_PIN          53         // Configurable, see typical pin layout above
 
 MFRC522 mfrc522(SS_PIN, RST_PIN);  // Create MFRC522 instance
+bool inSonarRange = false;
 
 
 // ---------------------------------------------------------------------- //
 // State Machines
 typedef enum stateEnum {wait_press, debounce_press, wait_release, debounce_release, unlocked, normal} stateEnum;
+typedef enum sonarEnum {wait_high, wait_low} sonarEnum;
+
+volatile sonarEnum echoSignal = wait_high; 
 volatile stateEnum button_state = wait_press; // ASSUMING WE BEGIN IN A STATE WHERE THE BUTTON IS NOT BEING PRESSED
 volatile stateEnum operation_state = normal;  // ASSUMING WE BEGIN IN A STATE OF NORMAL OPERATION
 
@@ -44,11 +51,29 @@ int main(void) {
   Serial.begin(9600);		// Initialize serial port
   SPI_MASTER_Init();    // Initialize SPI bus
   init_rfid();          // Initialize RFID module
+  sei(); 
+  initSwitchPB3();
+  initTimer4();
+  initTimer1();
+  initSonar();
 
   // MAIN LOOP
   while(1) {
     read_rfid();
     delay(1000);
+
+    if(inSonarRange){
+      Serial.println("<<<<<<OPENING DOOR>>>>>>");
+    }
+    sendPulse();
+    switch(echoSignal){
+      case wait_high:
+        TCNT4 = 0;
+      break;
+      case wait_low:
+        TCNT4 = 0;
+      break;
+    }
   }
  
   return 0;
@@ -82,12 +107,19 @@ ISR (INT0_vect) {
   // If the flag triggers while the button is 1 in one of the noisy debounce states, we do nothing.
 } // end ISR
 
-ISR(PCINT0_vect) {
-
-  // Stop timer
-  // Read timer value
-  // Reset timer to zero; disable timer
-  // Set global variable sonar_data
-
-
+// ---------------------------------------------------------------------- //
+// Interrupt Service Routines
+ISR(PCINT0_vect){//Main code is interrupted if the switch connected to pin50 changes
+  if(echoSignal == wait_high){
+    echoSignal = wait_low;
+  }
+  else { 
+    if(TCNT4 < inches(5)){//Within (roughly) 12 inches away from the device the condition is true
+      inSonarRange = true;
+    }
+    else{
+      inSonarRange = false;
+      echoSignal = wait_high;
+    }
+  }
 }
