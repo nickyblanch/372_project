@@ -19,10 +19,3 @@ void initSwitchPD0(){
 
     EIMSK |= (1 << INT0);   // Enable INT0 in the EIMSK register
 }
-
-void initSwitchPB3(){
-    DDRB &= (~(1<<DDB4));//Configures PORTB data direction as input
-    PORTB |= (1<<PORTB4);//Enables Pull-Up Resistors for PORTB4 pin10
-    PCICR |= (1<<PCIE0);//Enables PCINT 0-7
-    PCMSK0 |= (1<<PCINT4);//Enables PCINT4 pin10
-}

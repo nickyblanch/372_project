@@ -53,34 +53,41 @@ int main(void) {
   Serial.begin(9600);		// Initialize serial port
   SPI_MASTER_Init();    // Initialize SPI bus
   init_rfid();          // Initialize RFID module
-  sei(); 
-  initSwitchPB3();
+  initSwitchPD0();
   initPWMTimer3();
   initTimer4();
   initTimer1();
   initSonar();
+  sei(); 
   change_frequency(50);
 
   // MAIN LOOP
   while(1) {
-    num = read_rfid();
-    //delay(1000);
 
-    if(inSonarRange | (num == 568)) {
-      Serial.println("<<<<<<OPENING DOOR>>>>>>");
-      // OPEN THE DOOR
-      TURNCLOCKWISE();
-      delay(5000);
-      TURNCOUNTERCLOCKWISE();
+    if(operation_state == normal) {
+
+      num = read_rfid();
+      //delay(1000);
+
+      if(inSonarRange | (num == 568)) {
+        Serial.println("<<<<<<OPENING DOOR>>>>>>");
+        // OPEN THE DOOR
+        TURNCLOCKWISE();
+        delay(5000);
+        TURNCOUNTERCLOCKWISE();
+      }
+      sendPulse();
+      switch(echoSignal){
+        case wait_high:
+          TCNT4 = 0;
+        break;
+        case wait_low:
+          TCNT4 = 0;
+        break;
+      }
     }
-    sendPulse();
-    switch(echoSignal){
-      case wait_high:
-        TCNT4 = 0;
-      break;
-      case wait_low:
-        TCNT4 = 0;
-      break;
+    else {
+      TURNCOUNTERCLOCKWISE();
     }
   }
  
@@ -118,6 +125,7 @@ ISR (INT0_vect) {
 // ---------------------------------------------------------------------- //
 // Interrupt Service Routines
 ISR(PCINT0_vect){//Main code is interrupted if the switch connected to pin50 changes
+Serial.println(TCNT4);
   if(echoSignal == wait_high){
     echoSignal = wait_low;
   }
