@@ -100,6 +100,7 @@ int main(void) {
 // Interrupt Service Routines
 
 ISR (INT0_vect) {
+  Serial.println("Button triggered");
   // When the interrupt flag is triggered:
 
   if (button_state == wait_press) {
@@ -124,8 +125,8 @@ ISR (INT0_vect) {
 
 // ---------------------------------------------------------------------- //
 // Interrupt Service Routines
-ISR(PCINT0_vect){//Main code is interrupted if the switch connected to pin50 changes
-Serial.println(TCNT4);
+ISR(PCINT0_vect){ //Main code is interrupted if the switch connected to pin  changes
+  Serial.println(TCNT4);
   if(echoSignal == wait_high){
     echoSignal = wait_low;
   }
