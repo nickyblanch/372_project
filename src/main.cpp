@@ -60,21 +60,44 @@ int main(void) {
   initSonar();
   sei(); 
   change_frequency(50);
+  initTimer0();
 
   // MAIN LOOP
   while(1) {
-
+    
+      // Check the state
+    switch(button_state) {
+      case wait_press:
+        // Do nothing; we are waiting for the button to be pressed.
+        break;
+      case debounce_press:
+        // Wait for the noisy 'debounce' state to pass. Then, we are awaiting release.
+        delayMs(1);
+        button_state = wait_release;
+        break;
+      case wait_release:
+        // Do nothing; we are waiting for the button to be released.
+        break;
+      case debounce_release:
+        // The button has been released.
+        // Wait for the noisy 'debounce' state to pass. Then, we are awaiting press.
+        delayMs(1);
+        button_state = wait_press;
+        break;
+    }
     if(operation_state == normal) {
+      
+      TURNCOUNTERCLOCKWISE();
 
       num = read_rfid();
       //delay(1000);
 
-      if(inSonarRange | (num == 568)) {
+      if(inSonarRange | (num == 535)) {
         Serial.println("<<<<<<OPENING DOOR>>>>>>");
         // OPEN THE DOOR
+        delayMs(5000);Serial.println("delay 5 :1");
         TURNCLOCKWISE();
-        delay(5000);
-        TURNCOUNTERCLOCKWISE();
+        delayMs(5000);Serial.println("delay 5 2");
       }
       sendPulse();
       switch(echoSignal){
@@ -87,7 +110,8 @@ int main(void) {
       }
     }
     else {
-      TURNCOUNTERCLOCKWISE();
+      Serial.println("buttonUnlock");
+      TURNCLOCKWISE();
     }
   }
  
@@ -126,12 +150,12 @@ ISR (INT0_vect) {
 // ---------------------------------------------------------------------- //
 // Interrupt Service Routines
 ISR(PCINT0_vect){ //Main code is interrupted if the switch connected to pin  changes
-  Serial.println(TCNT4);
+  //Serial.println(TCNT4);
   if(echoSignal == wait_high){
     echoSignal = wait_low;
   }
   else { 
-    if(TCNT4 < inches(5)){//Within (roughly) 12 inches away from the device the condition is true
+    if(TCNT4 < inches(10)){//Within (roughly) 12 inches away from the device the condition is true
       inSonarRange = true;
     }
     else{
