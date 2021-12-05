@@ -100,7 +100,7 @@ int main(void) {
       if(inSonarRange | (num == 535)) {
         Serial.println("<<<<<<OPENING DOOR>>>>>>");
         // OPEN THE DOOR
-        delayMs(5000);
+        //delayMs(5000);
         TURNCLOCKWISE();
         delayMs(5000);
       }
