@@ -1,7 +1,6 @@
 #include <avr/io.h>
 #include "pwm.h"
 
-#include <Arduino.h>
 const double CLOCKWISE= 0.1;
 const double  COUNTERCLOCKWISE= 0.05;
 const double MIDDLE= 0.075;

@@ -15,7 +15,11 @@
 // Enable integer limits
 #define __STDC_LIMIT_MACROS
 #include <stdint.h>
+#include <avr/io.h>
+#include "timer.h"
+#include "spi_new.h"
 #include <Arduino.h>
+
 //#include <SPI.h>
 
 #ifndef MFRC522_SPICLOCK

@@ -5,9 +5,7 @@
 
 // ---------------------------------------------------------------------- //
 // Libraries and source files
-#include <Arduino.h>
 #include <MFRC522.h>
-//#include <SPI.h>
 #include "rfid.h"
 #include "switch.h"
 #include "spi_new.h"
