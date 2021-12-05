@@ -1,4 +1,3 @@
-#include <avr/io.h>
 #include "pwm.h"
 
 const double CLOCKWISE= 0.1;
@@ -52,15 +51,15 @@ void ChangeDutyCycle(double Direction){
      OCR3C = OCR3A * Direction;   
 }
 void TURNCLOCKWISE(){
-    _delay_ms(5);
+    delayMs(5);
     ChangeDutyCycle(CLOCKWISE);
     Serial.println("turning");
 }
 void TURNCOUNTERCLOCKWISE(){
-    _delay_ms(5);
+    delayMs(5);
     ChangeDutyCycle(COUNTERCLOCKWISE);
 }
 void TURNTOMIDDLE(){
-    _delay_ms(5);
+    delayMs(5);
     ChangeDutyCycle(MIDDLE);
 }

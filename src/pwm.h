@@ -2,6 +2,8 @@
 #define PWM_H
 
 #include <avr/io.h>
+#include <Arduino.h>
+#include "timer.h"
 
 void initPWMTimer3();
 void change_frequency(unsigned int freq_val);
