@@ -64,8 +64,19 @@ int main(void) {
 
   // MAIN LOOP
   while(1) {
+
+    // SEND SONAR PULSE AND READ RESPONSE
+    sendPulse();
+      switch(echoSignal){
+        case wait_high:
+          TCNT4 = 0;
+        break;
+        case wait_low:
+          TCNT4 = 0;
+        break;
+      }
     
-      // Check the state
+    // BUTTON STATE MACHINE
     switch(button_state) {
       case wait_press:
         // Do nothing; we are waiting for the button to be pressed.
@@ -85,30 +96,24 @@ int main(void) {
         button_state = wait_press;
         break;
     }
+
+    // IF WE ARE OPERATING NORMALLY
     if(operation_state == normal) {
       
       TURNCOUNTERCLOCKWISE();
 
       num = read_rfid();
-      //delay(1000);
 
       if(inSonarRange | (num == 535)) {
         Serial.println("<<<<<<OPENING DOOR>>>>>>");
         // OPEN THE DOOR
-        delayMs(5000);Serial.println("delay 5 :1");
+        delayMs(5000);
         TURNCLOCKWISE();
-        delayMs(5000);Serial.println("delay 5 2");
-      }
-      sendPulse();
-      switch(echoSignal){
-        case wait_high:
-          TCNT4 = 0;
-        break;
-        case wait_low:
-          TCNT4 = 0;
-        break;
+        delayMs(5000);
       }
     }
+
+    // OTHERWISE, UNLOCK
     else {
       Serial.println("buttonUnlock");
       TURNCLOCKWISE();

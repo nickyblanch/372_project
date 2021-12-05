@@ -4,9 +4,10 @@
 * Released into the public domain.
 */
 
-#include <Arduino.h>
+#include <avr/io.h>
 #include "MFRC522.h"
 #include "spi_new.h"
+#include "timer.h"
 
 /////////////////////////////////////////////////////////////////////////////////////
 // Functions for setting up the Arduino
@@ -176,7 +177,7 @@ void MFRC522::PCD_Init() {
 	bool hardReset = false;
 
 	// Set the chipSelectPin as digital output, do not select the slave yet
-	pinMode(_chipSelectPin, OUTPUT);
+	DDRB |= (1 << PB0);
 	digitalWrite(_chipSelectPin, HIGH);
 	
 	// If a valid pin number has been set, pull device out of power down / reset state.
@@ -187,10 +188,10 @@ void MFRC522::PCD_Init() {
 		if (digitalRead(_resetPowerDownPin) == LOW) {	// The MFRC522 chip is in power down mode.
 			pinMode(_resetPowerDownPin, OUTPUT);		// Now set the resetPowerDownPin as digital output.
 			digitalWrite(_resetPowerDownPin, LOW);		// Make sure we have a clean LOW state.
-			delayMicroseconds(2);				// 8.8.1 Reset timing requirements says about 100ns. Let us be generous: 2μsl
+			delayUs(2);				// 8.8.1 Reset timing requirements says about 100ns. Let us be generous: 2μsl
 			digitalWrite(_resetPowerDownPin, HIGH);		// Exit power down mode. This triggers a hard reset.
 			// Section 8.8.2 in the datasheet says the oscillator start-up time is the start up time of the crystal + 37,74μs. Let us be generous: 50ms.
-			delay(50);
+			delayMs(50);
 			hardReset = true;
 		}
 	}
@@ -249,7 +250,7 @@ void MFRC522::PCD_Reset() {
 	uint8_t count = 0;
 	do {
 		// Wait for the PowerDown bit in CommandReg to be cleared (max 3x50ms)
-		delay(50);
+		delayMs(50);
 	} while ((PCD_ReadRegister(CommandReg) & (1 << 4)) && (++count) < 3);
 } // End PCD_Reset()
 
