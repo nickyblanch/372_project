@@ -5,7 +5,7 @@ void init_rfid() {
 
   //SPI.begin();			// Init SPI bus
 	mfrc522.PCD_Init();		// Init MFRC522
-	delay(4);				// Optional delay. Some board do need more time after init to be ready, see Readme
+	delayMs(4);				// Optional delay. Some board do need more time after init to be ready, see Readme
 	mfrc522.PCD_DumpVersionToSerial();	// Show details of PCD - MFRC522 Card Reader details
 
 }
@@ -25,11 +25,11 @@ int read_rfid() {
     // Dump debug info about the card; PICC_HaltA() is automatically called
     // UID
     int num = 0;
-    Serial.print(F("Card UID:"));
+    //Serial.print(F("Card UID:"));
     for (byte i = 0; i < mfrc522.uid.size; i++) {
       num = num + mfrc522.uid.uidByte[i];
     } 
-    Serial.println(num);
+    //Serial.println(num);
     return(num);
 
 }

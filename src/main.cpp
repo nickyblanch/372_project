@@ -21,6 +21,7 @@
 
 MFRC522 mfrc522(SS_PIN, RST_PIN);  // Create MFRC522 instance
 bool inSonarRange = false;
+int sonar_finished = 0;
 
 
 // ---------------------------------------------------------------------- //
@@ -37,8 +38,8 @@ volatile stateEnum operation_state = normal;  // ASSUMING WE BEGIN IN A STATE OF
 // ---------------------------------------------------------------------- //
 // Main Function
 int main(void) {
+
   // Variables
-  //unsigned char sonar_data;
   int num = 0;
 
   // Hardware initializations
@@ -47,32 +48,26 @@ int main(void) {
   #if defined(USBCON)
       USBDevice.attach();
   #endif
-      
+    
+  sei();                // Enable global interrupts
   Serial.begin(9600);		// Initialize serial port
   SPI_MASTER_Init();    // Initialize SPI bus
   init_rfid();          // Initialize RFID module
-  initSwitchPD0();
-  initPWMTimer3();
-  initTimer4();
-  initTimer1();
-  initSonar();
-  sei(); 
-  change_frequency(50);
-  initTimer0();
+  initSwitchPD0();      // Initialize the switch
+  initPWMTimer3();      // Initialize the PWM driver for the servo
+  initTimer0();         // Initialize timer 0
+  initTimer1();         // Initialize timer 1
+  initTimer4();         // Initialize timer 4
+  initSonar();          // Initialize the sonar module 
+  change_frequency(50); // Set the servo frequency to 50 Hz
 
   // MAIN LOOP
   while(1) {
 
-    // SEND SONAR PULSE AND READ RESPONSE
+    // SEND SONAR PULSE AND WAIT FOR RESPONSE
+    sonar_finished = 0;
     sendPulse();
-      switch(echoSignal){
-        case wait_high:
-          TCNT4 = 0;
-        break;
-        case wait_low:
-          TCNT4 = 0;
-        break;
-      }
+    while(!sonar_finished);
     
     // BUTTON STATE MACHINE
     switch(button_state) {
@@ -150,15 +145,15 @@ ISR (INT0_vect) {
   // If the flag triggers while the button is 1 in one of the noisy debounce states, we do nothing.
 } // end ISR
 
-// ---------------------------------------------------------------------- //
-// Interrupt Service Routines
-ISR(PCINT0_vect){ //Main code is interrupted if the switch connected to pin  changes
+
+ISR(PCINT0_vect) {
   //Serial.println(TCNT4);
   if(echoSignal == wait_high){
     echoSignal = wait_low;
   }
-  else { 
-    if(TCNT4 < inches(10)){//Within (roughly) 12 inches away from the device the condition is true
+  else {
+    sonar_finished = 1;
+    if(TCNT4 < inches(10)) { //Within (roughly) 12 inches away from the device the condition is true
       inSonarRange = true;
     }
     else{
