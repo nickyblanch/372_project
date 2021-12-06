@@ -28,9 +28,9 @@ void SPI_MASTER_Init() {
 
     // enable SPI, master mode, CPOL, CPHA, default clock and fosc/128
     // datasheet says sample on rising edge CPOL = 1 CPHA =1
-    SPCR  |= (1 <<SPE)| (1 << MSTR) | (1 << CPOL) | (1 << CPHA ) | (1 << SPR1) | (1 << SPR0);
-
-    }
+    SPCR |= (1 <<SPE)| (1 << MSTR) | (1 << CPOL) | (1 << CPHA ) | (1 << SPR1) | (1 << SPR0);
+ 
+}
 
 void write_execute(unsigned char CMD, unsigned char data) {
     SPI_PORT &= ~(1 << SPI_SS_BIT);     // enable chip select bit to begin SPI frame
@@ -48,12 +48,13 @@ void write_execute_bytes(unsigned char CMD, unsigned char count, unsigned char *
     wait_for_complete;                  // wait for flag to raise
     for(unsigned char i = 0; i < count; i++) {
         SPDR = values[i];                        // load the data into register
-        wait_for_complete;                  // wait for flag to raise
+        wait_for_complete;                       // wait for flag to raise
     }
     SPI_PORT |= (1 << SPI_SS_BIT);      // disable chip select to end SPI frame
 }
 
 unsigned char read_execute(unsigned char reg_address) {
-    write_execute(0x80 | reg_address, 0x00);
+    write_execute(0x80 | reg_address, 0x00); // 0x80 | reg_address is the internal Register Address with the write bit masked on (0x80)
+                                             // 0x00 is 'dummy' data 
     return SPDR;
 }

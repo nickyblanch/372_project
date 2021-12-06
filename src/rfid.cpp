@@ -19,7 +19,7 @@ int read_rfid() {
 
     // Select one of the cards
     else if ( ! mfrc522.PICC_ReadCardSerial()) {
-      return;
+      return 0;
     }
 
     // Dump debug info about the card; PICC_HaltA() is automatically called
@@ -29,7 +29,7 @@ int read_rfid() {
     for (byte i = 0; i < mfrc522.uid.size; i++) {
       num = num + mfrc522.uid.uidByte[i];
     } 
-    //Serial.println(num);
+    // Serial.println(num);
     return(num);
 
 }

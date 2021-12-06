@@ -63,11 +63,7 @@ int main(void) {
 
   // MAIN LOOP
   while(1) {
-
-    // SEND SONAR PULSE AND WAIT FOR RESPONSE
-    sonar_finished = 0;
-    sendPulse();
-    while(!sonar_finished);
+    //Serial.println("LOOPING");
     
     // BUTTON STATE MACHINE
     switch(button_state) {
@@ -92,17 +88,34 @@ int main(void) {
 
     // IF WE ARE OPERATING NORMALLY
     if(operation_state == normal) {
+
+      // SEND SONAR PULSE AND WAIT FOR RESPONSE
+      sonar_finished = 0;
+      inSonarRange = false;
+      sendPulse();
+      //while(!sonar_finished);
       
       TURNCOUNTERCLOCKWISE();
 
       num = read_rfid();
-
-      if(inSonarRange | (num == 535)) {
-        Serial.println("<<<<<<OPENING DOOR>>>>>>");
+      if (inSonarRange) {
+        Serial.println("<<<<<<OPENING DOOR SONAR >>>>>>");
         // OPEN THE DOOR
         //delayMs(5000);
         TURNCLOCKWISE();
         delayMs(5000);
+      }
+      else {
+        num = read_rfid();
+        Serial.println(num);
+
+        if (num == 236) {
+          Serial.println("<<<<<<OPENING DOOR RFID >>>>>>");
+          // OPEN THE DOOR
+          //delayMs(5000);
+          TURNCLOCKWISE();
+          delayMs(5000);
+        }
       }
     }
 
@@ -111,6 +124,7 @@ int main(void) {
       Serial.println("buttonUnlock");
       TURNCLOCKWISE();
     }
+
   }
  
   return 0;
@@ -153,8 +167,10 @@ ISR(PCINT0_vect) {
   }
   else {
     sonar_finished = 1;
-    if(TCNT4 < inches(10)) { //Within (roughly) 12 inches away from the device the condition is true
+    if(TCNT4 < inches(12.5)) { // Within (roughly) 12 inches away from the device the condition is true
       inSonarRange = true;
+      echoSignal = wait_high;
+      Serial.print("SONAR: "); Serial.println(TCNT4);
     }
     else{
       inSonarRange = false;
