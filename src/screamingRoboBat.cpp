@@ -1,6 +1,10 @@
+// ECE 372 Final Project
+// Professor Dale Hetherington
+// Fall 2021
+// Authors: Nick Blanchard, Nicholas Gullo, Salman Marafie, Konner Curtis
+
 #include <avr/io.h>
 #include <Arduino.h>
-//#include <util/delay.h>
 #include "timer.h"
 
 

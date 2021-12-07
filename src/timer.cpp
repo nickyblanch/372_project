@@ -1,3 +1,8 @@
+// ECE 372 Final Project
+// Professor Dale Hetherington
+// Fall 2021
+// Authors: Nick Blanchard, Nicholas Gullo, Salman Marafie, Konner Curtis
+
 #include "timer.h"
 //You many use any timer you wish for the microsecond delay and the millisecond delay
 
@@ -5,6 +10,7 @@
 /* Initialize timer 1, you should not turn the timer on here. Use CTC mode  .*/
 // 1 us timer
 void initTimer1(){
+
 TCCR1A &= ~(1<< WGM10);
 TCCR1B |= (1<< WGM12);//This bit being 1 sets up CTC mode
 TCCR1A &= ~(1<< WGM11);
@@ -13,7 +19,8 @@ TCCR1B &= ~(1<< WGM13);
 TCCR1B |= (1 << CS10);
 TCCR1B &= ~((1 << CS12) | (1 << CS11));//Sets prescaler to 1
 
-OCR1A=15;
+OCR1A=15; // FOr 1 uS timer
+
 }	
 
 

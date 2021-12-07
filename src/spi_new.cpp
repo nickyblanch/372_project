@@ -1,6 +1,7 @@
-// Authors: Nick Blanchard,
-// Course: ECE 372
-// Final Project Fall 2021
+// ECE 372 Final Project
+// Professor Dale Hetherington
+// Fall 2021
+// Authors: Nick Blanchard, Nicholas Gullo, Salman Marafie, Konner Curtis
 
 #include <avr/interrupt.h>
 #include <avr/io.h>

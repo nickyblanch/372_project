@@ -1,3 +1,8 @@
+// ECE 372 Final Project
+// Professor Dale Hetherington
+// Fall 2021
+// Authors: Nick Blanchard, Nicholas Gullo, Salman Marafie, Konner Curtis
+
 #include "rfid.h"
 #include "spi_new.h"
 
