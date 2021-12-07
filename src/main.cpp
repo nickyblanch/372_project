@@ -1,7 +1,7 @@
 // ECE 372 Final Project
 // Professor Dale Hetherington
 // Fall 2021
-// Authors: Nick Blanchard,
+// Authors: Nick Blanchard, Nicholas Gullo, Salman Marafie, Konner Curtis
 
 // ---------------------------------------------------------------------- //
 // Libraries and source files
