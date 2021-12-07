@@ -107,7 +107,7 @@ int main(void) {
       }
       else {
         num = read_rfid();
-        Serial.println(num);
+        // Serial.println(num);
 
         if (num == 236) {
           Serial.println("<<<<<<OPENING DOOR RFID >>>>>>");
